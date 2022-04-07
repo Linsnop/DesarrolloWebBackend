@@ -1,3 +1,6 @@
+from crypt import methods
+from distutils.log import error
+import errno
 from flask import Flask, render_template
 
 # FlASK
@@ -11,4 +14,8 @@ def home():
 
 @app.route('/prueba')
 def prueba():
-    return ("A01653451 hola")
+    nombres =[]
+    nombres.append ({"nombre": "Isaac"})
+    nombres.append ({"nombre": "David"})
+
+    return render_template ("home.html", data=nombres)
