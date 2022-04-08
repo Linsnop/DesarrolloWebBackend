@@ -1,5 +1,3 @@
-from crypt import methods
-import email
 
 from flask import Flask, redirect, render_template, request, session, url_for
 import datetime
@@ -43,6 +41,3 @@ def logout():
     if "email" in session:
         session.clear
         return redirect(url_for("home"))
-    else:
-        return redirect(url_for("home"))
-        #return render_template("index.html")
