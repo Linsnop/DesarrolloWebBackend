@@ -35,9 +35,10 @@ def login():
             email=request.form["email"]
             password= request.form["password"]
             session ["email"]=email
+            return render_template("index.html", data= email)
 
 @app.route('/logout')
 def logout():
     if "email" in session:
-        session.clear
+        session.clear()
         return redirect(url_for("home"))
