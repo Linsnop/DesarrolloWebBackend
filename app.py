@@ -1,7 +1,7 @@
 from crypt import methods
 import email
 
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session, url_for
 import datetime
 
 
@@ -38,3 +38,8 @@ def login():
             password= request.form["password"]
             session ["email"]=email
 
+@app.route('/logout')
+def logout():
+    if "email" in session:
+        session.clear
+        redirect(url_for("home"))
