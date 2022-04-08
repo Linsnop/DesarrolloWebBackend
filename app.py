@@ -42,4 +42,4 @@ def login():
 def logout():
     if "email" in session:
         session.clear
-        redirect(url_for("home"))
+        return redirect(url_for("home"))
