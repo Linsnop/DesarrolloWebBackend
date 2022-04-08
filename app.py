@@ -42,5 +42,7 @@ def login():
 def logout():
     if "email" in session:
         session.clear
-        #return redirect(url_for("home"))
-        return render_template("index.html")
+        return redirect(url_for("home"))
+    else:
+        return redirect(url_for("home"))
+        #return render_template("index.html")
