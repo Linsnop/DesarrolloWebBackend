@@ -1,7 +1,6 @@
 from crypt import methods
-from distutils.log import error
-import errno
-from flask import Flask, render_template
+
+from flask import Flask, render_template, request
 
 # FlASK
 #############################################################
@@ -12,10 +11,13 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route('/prueba')
-def prueba():
-    nombres =[]
-    nombres.append ({"nombre": "Isaac"})
-    nombres.append ({"nombre": "David"})
+@app.route('/login')
+def login():
+    if (request.method=="GET"):
+        return render_template("Login.html", data="email")
+    else:
+        email=None
+        email=request.form["email"]
+        password= request.form["password"]
+    return render_template('index.html', data=email)
 
-    return render_template ("home.html", data=nombres)
