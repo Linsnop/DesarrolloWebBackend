@@ -65,3 +65,5 @@ def usuarios():
     for doc in cursor:
         users.append(doc)
     return render_template("/usuarios.html", data=users)
+
+    
