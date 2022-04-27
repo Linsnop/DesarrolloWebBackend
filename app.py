@@ -1,7 +1,10 @@
+import email
+from webbrowser import get
 from flask import Flask, redirect, render_template, request, session, url_for
 import datetime
 import pymongo
 from decouple import config
+from urllib3 import Retry
 
 # FlASK
 #############################################################
@@ -26,8 +29,8 @@ cuentas = db.alumno
 @app.route('/')
 def home():
     email=None
-    if "email" in session:
-        email=session["email"]
+    if "correo" in session:
+        email=session["correo"]
         return render_template("index.html", data=email)
     else:
         return render_template('Login.html', data=email)
@@ -35,23 +38,37 @@ def home():
 @app.route('/login', methods = ["GET","POST"])
 def login():
     email =None
-    if "email" in session:
+    if "correo" in session:
         return render_template("index.html", data=email)
     else:
 
         if (request.method=="GET"):
 
-            return render_template("Login.html", data="email")
+            return render_template("Login.html", data="correo")
         else:
             email=None
-            email=request.form["email"]
-            password= request.form["password"]
-            session ["email"]=email
-            return render_template("index.html", data= email)
+            email=request.form["correo"]
+            password= request.form["contrasena"]
+
+            ExpectedUser = verify(email,password)
+
+            if (ExpectedUser != None):
+                session ["correo"]=email
+                return render_template("index.html", data= email)
+            else:
+                return redirect(url_for("login"))
+                
+
+
+def verify(email,password):
+
+        Expecteduser = cuentas.find_one({"correo": (email), "contrasena": (password)})
+        return Expecteduser
+
 
 @app.route('/logout')
 def logout():
-    if "email" in session:
+    if "correo" in session:
         session.clear()
         return redirect(url_for("home"))
 
@@ -76,7 +93,7 @@ def insertUsers():
 
     try:
         cuentas.insert_one(user)
-        return redirect(url_for("usuarios"))
+        return redirect(url_for("login"))
     except Exception as e:
         return "<p>El servicio no esta disponible =>: %s %s" % type(e), e
 
