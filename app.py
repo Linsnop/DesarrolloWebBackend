@@ -1,10 +1,7 @@
-
-from crypt import methods
-from http import client
-from telnetlib import TLS
 from flask import Flask, redirect, render_template, request, session, url_for
 import datetime
 import pymongo
+from decouple import config
 
 # FlASK
 #############################################################
@@ -16,7 +13,7 @@ app.secret_key = "super secret key"
 
 # MONGODB
 #############################################################
-mongodb_key = "mongodb+srv://desarrollowebuser:desarrollowebpassword@cluster0.dfh7g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+mongodb_key = config('mongodb_key')
 client = pymongo.MongoClient(
     mongodb_key, tls=True, tlsAllowInvalidCertificates=True)
 db = client.Escuela
@@ -74,7 +71,7 @@ def insertUsers():
         "matricula": request.form["matricula"],
         "nombre": request.form["nombre"],
         "correo": request.form["correo"],
-        "contrasena": request.form["contraseña"],
+        "contrasena": request.form["contrasena"]
     }
 
     try:
@@ -107,6 +104,7 @@ def delete_one(matricula):
     except Exception as e:
         return "%s" % e
 
+
 @app.route("/update", methods=["POST"])
 def update():
     try:
@@ -121,6 +119,8 @@ def update():
         return "error %s" % (e)
 
 
-@app.route('/create')
+@app.route('/create', methods=["PÖST"])
 def create():
     return render_template('Create.html')
+
+    
