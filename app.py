@@ -5,6 +5,7 @@ import datetime
 import pymongo
 from decouple import config
 from urllib3 import Retry
+from twilio.rest import Client
 
 # FlASK
 #############################################################
@@ -24,7 +25,12 @@ cuentas = db.alumno
 #############################################################
 
 
-
+# Twilio
+#############################################################
+account_sid = config('account_sid')
+auth_token = config('auth_token')
+TwilioClient = Client(account_sid, auth_token)
+#############################################################
 
 @app.route('/')
 def home():
@@ -88,11 +94,17 @@ def insertUsers():
         "matricula": request.form["matricula"],
         "nombre": request.form["nombre"],
         "correo": request.form["correo"],
-        "contrasena": request.form["contrasena"]
+        "contrasena": request.form["contrasena"],
     }
-
     try:
         cuentas.insert_one(user)
+        comogusten = TwilioClient.messages.create(
+            from_="whatsapp:+14155238886",
+            body="El usuario %s se agregó a tu pagina web" % (
+                request.form["nombre"]),
+            to="whatsapp:+5215530151061"
+        )
+        print(comogusten.sid)
         return redirect(url_for("login"))
     except Exception as e:
         return "<p>El servicio no esta disponible =>: %s %s" % type(e), e
